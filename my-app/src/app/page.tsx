@@ -1,4 +1,5 @@
 import Timer from "@/components/Timer";
+import TodoList from "@/components/TodoList";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
         <p className="text-secondary">A calm place to get things done</p>
       </div>
       <Timer />
+      <TodoList />
     </div>
   );
 }
