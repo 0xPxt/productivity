@@ -3,7 +3,63 @@
 import { useState, useEffect, useRef } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Settings } from 'lucide-react';
+import { Settings, Play, Pause } from 'lucide-react';
+
+interface AnimatedIconButtonProps {
+  onClick: () => void;
+  disabled?: boolean;
+  icon: 'play' | 'pause';
+  ariaLabel: string;
+  className?: string;
+}
+
+function AnimatedIconButton({ onClick, disabled, icon, ariaLabel, className = '' }: AnimatedIconButtonProps) {
+  const iconPaths = {
+    play: 'M5 3l14 9-14 9V3z',
+    pause: 'M6 4h4v16H6V4zm8 0h4v16h-4V4z'
+  };
+
+  const clipPathId = `${icon}Shape`;
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`relative group ${className}`}
+      aria-label={ariaLabel}
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="relative">
+        <defs>
+          <clipPath id={clipPathId}>
+            <path d={iconPaths[icon]} fillRule="evenodd" clipRule="evenodd"/>
+          </clipPath>
+        </defs>
+
+        {/* Icon outline */}
+        <path
+          d={iconPaths[icon]}
+          stroke="#9A9085"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="transition-colors group-hover:stroke-highlight group-disabled:stroke-current"
+        />
+
+        {/* Progressive fill */}
+        <g clipPath={`url(#${clipPathId})`}>
+          <rect
+            x="0"
+            y="24"
+            width="24"
+            height="24"
+            fill="#403A34"
+            className="transition-all duration-500 ease-out group-hover:-translate-y-full group-disabled:translate-y-0"
+          />
+        </g>
+      </svg>
+    </button>
+  );
+}
 
 export default function Timer() {
   const [hours, setHours] = useState(0);
@@ -282,20 +338,20 @@ export default function Timer() {
 
       {/* Controls */}
       <div className="flex gap-4">
-        <button
+        <AnimatedIconButton
           onClick={handleStart}
           disabled={hours === 0 && minutes === 0}
-          className="px-6 py-2 bg-highlight text-foreground border border-border rounded hover:bg-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer min-w-24"
-        >
-          Start
-        </button>
-        <button
+          icon="play"
+          ariaLabel="Start timer"
+          className="px-6 py-2 bg-highlight text-foreground border border-border rounded hover:bg-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer min-w-24 flex items-center justify-center"
+        />
+        <AnimatedIconButton
           onClick={handlePause}
           disabled={!isRunning}
-          className="px-6 py-2 bg-highlight text-foreground border border-border rounded hover:bg-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer min-w-24"
-        >
-          Pause
-        </button>
+          icon="pause"
+          ariaLabel="Pause timer"
+          className="px-6 py-2 bg-highlight text-foreground border border-border rounded hover:bg-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer min-w-24 flex items-center justify-center"
+        />
         <button
           onClick={handleReset}
           className="px-6 py-2 bg-highlight text-foreground border border-border rounded hover:bg-border transition-colors cursor-pointer min-w-24"

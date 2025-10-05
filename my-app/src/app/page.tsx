@@ -1,5 +1,6 @@
 import Timer from "@/components/Timer";
 import TodoList from "@/components/TodoList";
+import NotesPanel from "@/components/NotesPanel";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       </div>
       <Timer />
       <TodoList />
+      <NotesPanel />
     </div>
   );
 }

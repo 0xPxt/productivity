@@ -63,8 +63,8 @@ export default function TodoList() {
 
       {/* Sliding Panel */}
       <div
-        className={`fixed top-1/2 -translate-y-1/2 right-0 h-2/3 w-96 bg-highlight border-2 border-r-0 border-border rounded-l-2xl shadow-xl z-50 transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-1/2 -translate-y-1/2 -right-96 h-2/3 w-96 bg-highlight border-2 border-border rounded-2xl shadow-xl z-50 transition-transform duration-300 ease-in-out ${
+          isOpen ? '-translate-x-[25rem]' : 'translate-x-0'
         }`}
       >
         <div className="flex flex-col h-full p-6">
