@@ -51,6 +51,7 @@ export function CoffeeCupVisualization({ fillPercentage }: CoffeeCupVisualizatio
             ry="4"
             fill={COLORS.COFFEE_SHIMMER}
             opacity="0.6"
+            className={`transition-all ${ANIMATION.FILL_DURATION} ease-linear`}
           />
         )}
       </g>

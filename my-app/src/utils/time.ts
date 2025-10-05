@@ -9,13 +9,12 @@ export function formatTime(seconds: number): string {
 }
 
 /**
- * Calculates fill percentage based on elapsed time
+ * Calculates fill percentage based on remaining time (inverted - drains as time passes)
  */
 export function calculateFillPercentage(totalSeconds: number, remainingSeconds: number): number {
   if (totalSeconds === 0) {
-    return 0;
+    return 100; // Start full when not set
   }
-  const elapsed = totalSeconds - remainingSeconds;
-  const progress = elapsed / totalSeconds;
+  const progress = remainingSeconds / totalSeconds;
   return progress * 100;
 }
