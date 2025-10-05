@@ -56,20 +56,20 @@ export default function TodoList() {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-accent/20 backdrop-blur-sm z-40"
+          className="fixed inset-0 bg-accent/20 backdrop-blur-sm z-45"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sliding Panel */}
       <div
-        className={`fixed top-1/2 -translate-y-1/2 -right-96 h-2/3 w-96 bg-highlight border-2 border-border rounded-2xl shadow-xl z-50 transition-transform duration-300 ease-in-out ${
+        className={`fixed top-1/2 -translate-y-1/2 -right-96 h-2/3 min-h-[400px] w-96 bg-highlight border-2 border-border rounded-2xl shadow-xl z-50 transition-transform duration-300 ease-in-out ${
           isOpen ? '-translate-x-[25rem]' : 'translate-x-0'
         }`}
       >
-        <div className="flex flex-col h-full p-6">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col h-full">
+          {/* Header - Fixed */}
+          <div className="flex items-center justify-between p-6 pb-4 flex-shrink-0">
             <h2 className="text-2xl font-bold text-foreground">Tasks</h2>
             <button
               onClick={() => setIsOpen(false)}
@@ -80,8 +80,8 @@ export default function TodoList() {
             </button>
           </div>
 
-          {/* Add Task Form */}
-          <form onSubmit={addTask} className="mb-6">
+          {/* Add Task Form - Fixed */}
+          <form onSubmit={addTask} className="px-6 pb-4 flex-shrink-0">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -99,8 +99,8 @@ export default function TodoList() {
             </div>
           </form>
 
-          {/* Task List */}
-          <div className="flex-1 overflow-y-auto space-y-2">
+          {/* Task List - Scrollable */}
+          <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-2">
             {tasks.length === 0 ? (
               <p className="text-secondary text-center mt-8">
                 No tasks yet. Add one to get started!
