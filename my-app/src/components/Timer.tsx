@@ -8,7 +8,7 @@ import { Settings, Play, Pause } from 'lucide-react';
 interface AnimatedIconButtonProps {
   onClick: () => void;
   disabled?: boolean;
-  icon: 'play' | 'pause';
+  icon: 'play' | 'pause' | 'reset';
   ariaLabel: string;
   className?: string;
 }
@@ -16,7 +16,8 @@ interface AnimatedIconButtonProps {
 function AnimatedIconButton({ onClick, disabled, icon, ariaLabel, className = '' }: AnimatedIconButtonProps) {
   const iconPaths = {
     play: 'M5 3l14 9-14 9V3z',
-    pause: 'M6 4h4v16H6V4zm8 0h4v16h-4V4z'
+    pause: 'M6 4h4v16H6V4zm8 0h4v16h-4V4z',
+    reset: 'M17.65 6.35A7.96 7.96 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z'
   };
 
   const clipPathId = `${icon}Shape`;
@@ -28,7 +29,7 @@ function AnimatedIconButton({ onClick, disabled, icon, ariaLabel, className = ''
       className={`relative group ${className}`}
       aria-label={ariaLabel}
     >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="relative">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="relative">
         <defs>
           <clipPath id={clipPathId}>
             <path d={iconPaths[icon]} fillRule="evenodd" clipRule="evenodd"/>
@@ -352,12 +353,12 @@ export default function Timer() {
           ariaLabel="Pause timer"
           className="px-6 py-2 bg-highlight text-foreground border border-border rounded hover:bg-border transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer min-w-24 flex items-center justify-center"
         />
-        <button
+        <AnimatedIconButton
           onClick={handleReset}
-          className="px-6 py-2 bg-highlight text-foreground border border-border rounded hover:bg-border transition-colors cursor-pointer min-w-24"
-        >
-          Reset
-        </button>
+          icon="reset"
+          ariaLabel="Reset timer"
+          className="px-6 py-2 bg-highlight text-foreground border border-border rounded hover:bg-border transition-colors cursor-pointer min-w-24 flex items-center justify-center"
+        />
       </div>
     </div>
   );
