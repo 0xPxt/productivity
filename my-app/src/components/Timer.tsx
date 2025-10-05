@@ -11,7 +11,26 @@ export default function Timer() {
   const [totalSeconds, setTotalSeconds] = useState(0);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [tempHours, setTempHours] = useState(0);
+  const [tempMinutes, setTempMinutes] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const applyTimeSettings = () => {
+    setHours(tempHours);
+    setMinutes(tempMinutes);
+    const total = tempHours * 3600 + tempMinutes * 60;
+    setRemainingSeconds(total);
+    setTotalSeconds(total);
+  };
+
+  // Update display when hours or minutes change (if not running and stopped)
+  useEffect(() => {
+    if (!isRunning && remainingSeconds === 0) {
+      const total = hours * 3600 + minutes * 60;
+      setRemainingSeconds(total);
+      setTotalSeconds(total);
+    }
+  }, [hours, minutes, isRunning, remainingSeconds]);
 
   useEffect(() => {
     if (isRunning && remainingSeconds > 0) {
@@ -38,10 +57,12 @@ export default function Timer() {
   }, [isRunning, remainingSeconds]);
 
   const handleStart = () => {
-    if (hours > 0 || minutes > 0) {
+    if (remainingSeconds === 0 && (hours > 0 || minutes > 0)) {
       const total = hours * 3600 + minutes * 60;
       setTotalSeconds(total);
       setRemainingSeconds(total);
+    }
+    if (remainingSeconds > 0) {
       setIsRunning(true);
     }
   };
@@ -150,7 +171,7 @@ export default function Timer() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="relative">
                 <defs>
                   <clipPath id="gearShape">
-                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" fill-rule="evenodd" clip-rule="evenodd"/>
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" fillRule="evenodd" clipRule="evenodd"/>
                   </clipPath>
                 </defs>
 
@@ -204,11 +225,11 @@ export default function Timer() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <label className="text-sm text-secondary">Hours</label>
-                    <span className="text-lg text-foreground font-medium">{hours}</span>
+                    <span className="text-lg text-foreground font-medium">{tempHours}</span>
                   </div>
                   <Slider.Root
-                    value={[hours]}
-                    onValueChange={(value) => setHours(value[0])}
+                    value={[tempHours]}
+                    onValueChange={(value) => setTempHours(value[0])}
                     max={23}
                     step={1}
                     className="relative flex items-center select-none touch-none w-full h-5 cursor-pointer"
@@ -226,11 +247,11 @@ export default function Timer() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <label className="text-sm text-secondary">Minutes</label>
-                    <span className="text-lg text-foreground font-medium">{minutes}</span>
+                    <span className="text-lg text-foreground font-medium">{tempMinutes}</span>
                   </div>
                   <Slider.Root
-                    value={[minutes]}
-                    onValueChange={(value) => setMinutes(value[0])}
+                    value={[tempMinutes]}
+                    onValueChange={(value) => setTempMinutes(value[0])}
                     max={59}
                     step={1}
                     className="relative flex items-center select-none touch-none w-full h-5 cursor-pointer"
@@ -247,7 +268,10 @@ export default function Timer() {
               </div>
 
               <Dialog.Close asChild>
-                <button className="w-full px-4 py-2 bg-foreground text-highlight rounded hover:bg-accent transition-colors cursor-pointer">
+                <button
+                  onClick={applyTimeSettings}
+                  className="w-full px-4 py-2 bg-foreground text-highlight rounded hover:bg-accent transition-colors cursor-pointer"
+                >
                   Done
                 </button>
               </Dialog.Close>
