@@ -18,9 +18,17 @@ export default function Timer() {
     mode,
     pomodoroSession,
     sessionCount,
+    tempPomodoroWork,
+    tempPomodoroShortBreak,
+    tempPomodoroLongBreak,
+    tempSessionsBeforeLongBreak,
     setTempHours,
     setTempMinutes,
     setMode,
+    setTempPomodoroWork,
+    setTempPomodoroShortBreak,
+    setTempPomodoroLongBreak,
+    setTempSessionsBeforeLongBreak,
     applyTimeSettings,
     handleStart,
     handlePause,
@@ -66,9 +74,17 @@ export default function Timer() {
           tempHours={tempHours}
           tempMinutes={tempMinutes}
           mode={mode}
+          tempPomodoroWork={tempPomodoroWork}
+          tempPomodoroShortBreak={tempPomodoroShortBreak}
+          tempPomodoroLongBreak={tempPomodoroLongBreak}
+          tempSessionsBeforeLongBreak={tempSessionsBeforeLongBreak}
           setTempHours={setTempHours}
           setTempMinutes={setTempMinutes}
           setMode={setMode}
+          setTempPomodoroWork={setTempPomodoroWork}
+          setTempPomodoroShortBreak={setTempPomodoroShortBreak}
+          setTempPomodoroLongBreak={setTempPomodoroLongBreak}
+          setTempSessionsBeforeLongBreak={setTempSessionsBeforeLongBreak}
           onApply={applyTimeSettings}
         />
       </div>

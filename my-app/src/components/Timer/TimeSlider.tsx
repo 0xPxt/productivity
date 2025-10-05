@@ -5,9 +5,10 @@ interface TimeSliderProps {
   value: number;
   onValueChange: (value: number) => void;
   max: number;
+  min?: number;
 }
 
-export function TimeSlider({ label, value, onValueChange, max }: TimeSliderProps) {
+export function TimeSlider({ label, value, onValueChange, max, min = 0 }: TimeSliderProps) {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
@@ -17,6 +18,7 @@ export function TimeSlider({ label, value, onValueChange, max }: TimeSliderProps
       <Slider.Root
         value={[value]}
         onValueChange={(values) => onValueChange(values[0])}
+        min={min}
         max={max}
         step={1}
         className="relative flex items-center select-none touch-none w-full h-5 cursor-pointer"

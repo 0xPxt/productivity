@@ -7,9 +7,17 @@ interface SettingsDialogProps {
   tempHours: number;
   tempMinutes: number;
   mode: TimerMode;
+  tempPomodoroWork: number;
+  tempPomodoroShortBreak: number;
+  tempPomodoroLongBreak: number;
+  tempSessionsBeforeLongBreak: number;
   setTempHours: (hours: number) => void;
   setTempMinutes: (minutes: number) => void;
   setMode: (mode: TimerMode) => void;
+  setTempPomodoroWork: (minutes: number) => void;
+  setTempPomodoroShortBreak: (minutes: number) => void;
+  setTempPomodoroLongBreak: (minutes: number) => void;
+  setTempSessionsBeforeLongBreak: (sessions: number) => void;
   onApply: () => void;
 }
 
@@ -17,9 +25,17 @@ export function SettingsDialog({
   tempHours,
   tempMinutes,
   mode,
+  tempPomodoroWork,
+  tempPomodoroShortBreak,
+  tempPomodoroLongBreak,
+  tempSessionsBeforeLongBreak,
   setTempHours,
   setTempMinutes,
   setMode,
+  setTempPomodoroWork,
+  setTempPomodoroShortBreak,
+  setTempPomodoroLongBreak,
+  setTempSessionsBeforeLongBreak,
   onApply
 }: SettingsDialogProps) {
   return (
@@ -40,7 +56,9 @@ export function SettingsDialog({
             Timer Settings
           </Dialog.Title>
           <Dialog.Description className="text-sm text-secondary mb-6">
-            {mode === 'default' ? 'Adjust the timer duration' : 'Pomodoro: 25min work, 5min break (15min every 4th)'}
+            {mode === 'default'
+              ? 'Adjust the timer duration'
+              : `Pomodoro: ${tempPomodoroWork}min work, ${tempPomodoroShortBreak}min break (every ${tempSessionsBeforeLongBreak} sessions, ${tempPomodoroLongBreak}min break)`}
           </Dialog.Description>
 
           {/* Mode Toggle */}
@@ -72,8 +90,8 @@ export function SettingsDialog({
             </div>
           </div>
 
-          {/* Sliders - only show in default mode */}
-          {mode === 'default' && (
+          {/* Sliders - conditional based on mode */}
+          {mode === 'default' ? (
             <div className="space-y-6 mb-6">
               <TimeSlider
                 label="Hours"
@@ -86,6 +104,37 @@ export function SettingsDialog({
                 value={tempMinutes}
                 onValueChange={setTempMinutes}
                 max={59}
+              />
+            </div>
+          ) : (
+            <div className="space-y-6 mb-6">
+              <TimeSlider
+                label="Work Session (minutes)"
+                value={tempPomodoroWork}
+                onValueChange={setTempPomodoroWork}
+                min={1}
+                max={60}
+              />
+              <TimeSlider
+                label="Short Break"
+                value={tempPomodoroShortBreak}
+                onValueChange={setTempPomodoroShortBreak}
+                min={1}
+                max={30}
+              />
+              <TimeSlider
+                label="Long Break"
+                value={tempPomodoroLongBreak}
+                onValueChange={setTempPomodoroLongBreak}
+                min={1}
+                max={60}
+              />
+              <TimeSlider
+                label="Sessions Before Long Break"
+                value={tempSessionsBeforeLongBreak}
+                onValueChange={setTempSessionsBeforeLongBreak}
+                min={2}
+                max={8}
               />
             </div>
           )}

@@ -162,7 +162,7 @@ export default function WhiteNoisePanel() {
             {/* Info */}
             <div className="pt-4 border-t border-border">
               <p className="text-xs text-secondary text-center">
-                White noise can help improve focus and mask distracting sounds
+                Colored noises mask distracting sounds and can help improve focus
               </p>
             </div>
           </div>

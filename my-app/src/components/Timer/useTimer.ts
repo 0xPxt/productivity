@@ -14,19 +14,27 @@ export interface UseTimerReturn {
   mode: TimerMode;
   pomodoroSession: PomodoroSession;
   sessionCount: number;
+  tempPomodoroWork: number;
+  tempPomodoroShortBreak: number;
+  tempPomodoroLongBreak: number;
+  tempSessionsBeforeLongBreak: number;
   setTempHours: (hours: number) => void;
   setTempMinutes: (minutes: number) => void;
   setMode: (mode: TimerMode) => void;
+  setTempPomodoroWork: (minutes: number) => void;
+  setTempPomodoroShortBreak: (minutes: number) => void;
+  setTempPomodoroLongBreak: (minutes: number) => void;
+  setTempSessionsBeforeLongBreak: (sessions: number) => void;
   applyTimeSettings: () => void;
   handleStart: () => void;
   handlePause: () => void;
   handleReset: () => void;
 }
 
-const POMODORO_WORK_MINUTES = 1;
-const POMODORO_SHORT_BREAK_MINUTES = 1;
-const POMODORO_LONG_BREAK_MINUTES = 1;
-const SESSIONS_BEFORE_LONG_BREAK = 2;
+const DEFAULT_POMODORO_WORK_MINUTES = 25;
+const DEFAULT_POMODORO_SHORT_BREAK_MINUTES = 5;
+const DEFAULT_POMODORO_LONG_BREAK_MINUTES = 25;
+const DEFAULT_SESSIONS_BEFORE_LONG_BREAK = 4;
 
 export function useTimer(): UseTimerReturn {
   const [hours, setHours] = useState(0);
@@ -39,19 +47,41 @@ export function useTimer(): UseTimerReturn {
   const [mode, setMode] = useState<TimerMode>('default');
   const [pomodoroSession, setPomodoroSession] = useState<PomodoroSession>('work');
   const [sessionCount, setSessionCount] = useState(1);
+
+  // Pomodoro duration settings
+  const [pomodoroWorkMinutes, setPomodoroWorkMinutes] = useState(DEFAULT_POMODORO_WORK_MINUTES);
+  const [pomodoroShortBreakMinutes, setPomodoroShortBreakMinutes] = useState(DEFAULT_POMODORO_SHORT_BREAK_MINUTES);
+  const [pomodoroLongBreakMinutes, setPomodoroLongBreakMinutes] = useState(DEFAULT_POMODORO_LONG_BREAK_MINUTES);
+  const [sessionsBeforeLongBreak, setSessionsBeforeLongBreak] = useState(DEFAULT_SESSIONS_BEFORE_LONG_BREAK);
+  const [tempPomodoroWork, setTempPomodoroWork] = useState(DEFAULT_POMODORO_WORK_MINUTES);
+  const [tempPomodoroShortBreak, setTempPomodoroShortBreak] = useState(DEFAULT_POMODORO_SHORT_BREAK_MINUTES);
+  const [tempPomodoroLongBreak, setTempPomodoroLongBreak] = useState(DEFAULT_POMODORO_LONG_BREAK_MINUTES);
+  const [tempSessionsBeforeLongBreak, setTempSessionsBeforeLongBreak] = useState(DEFAULT_SESSIONS_BEFORE_LONG_BREAK);
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startPomodoroSession = (session: PomodoroSession, count: number) => {
+  const startPomodoroSession = (
+    session: PomodoroSession,
+    count: number,
+    workMins?: number,
+    shortBreakMins?: number,
+    longBreakMins?: number,
+    sessionsBeforeLong?: number
+  ) => {
     setPomodoroSession(session);
     setSessionCount(count);
 
+    // Use provided values or fall back to state
+    const work = workMins ?? pomodoroWorkMinutes;
+    const shortBreak = shortBreakMins ?? pomodoroShortBreakMinutes;
+    const longBreak = longBreakMins ?? pomodoroLongBreakMinutes;
+    const sessionThreshold = sessionsBeforeLong ?? sessionsBeforeLongBreak;
+
     let minutes: number;
     if (session === 'work') {
-      minutes = POMODORO_WORK_MINUTES;
+      minutes = work;
     } else {
-      minutes = count % SESSIONS_BEFORE_LONG_BREAK === 0
-        ? POMODORO_LONG_BREAK_MINUTES
-        : POMODORO_SHORT_BREAK_MINUTES;
+      minutes = count % sessionThreshold === 0 ? longBreak : shortBreak;
     }
 
     const total = minutes * 60;
@@ -67,8 +97,20 @@ export function useTimer(): UseTimerReturn {
       setRemainingSeconds(total);
       setTotalSeconds(total);
     } else {
-      // Pomodoro mode - start with a work session
-      startPomodoroSession('work', 1);
+      // Apply pomodoro settings
+      setPomodoroWorkMinutes(tempPomodoroWork);
+      setPomodoroShortBreakMinutes(tempPomodoroShortBreak);
+      setPomodoroLongBreakMinutes(tempPomodoroLongBreak);
+      setSessionsBeforeLongBreak(tempSessionsBeforeLongBreak);
+      // Start with a work session using the temp values directly
+      startPomodoroSession(
+        'work',
+        1,
+        tempPomodoroWork,
+        tempPomodoroShortBreak,
+        tempPomodoroLongBreak,
+        tempSessionsBeforeLongBreak
+      );
     }
   };
 
@@ -165,9 +207,17 @@ export function useTimer(): UseTimerReturn {
     mode,
     pomodoroSession,
     sessionCount,
+    tempPomodoroWork,
+    tempPomodoroShortBreak,
+    tempPomodoroLongBreak,
+    tempSessionsBeforeLongBreak,
     setTempHours,
     setTempMinutes,
     setMode,
+    setTempPomodoroWork,
+    setTempPomodoroShortBreak,
+    setTempPomodoroLongBreak,
+    setTempSessionsBeforeLongBreak,
     applyTimeSettings,
     handleStart,
     handlePause,
