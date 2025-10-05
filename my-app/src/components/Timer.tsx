@@ -134,20 +134,17 @@ export default function Timer() {
     setTotalSeconds(0);
   };
 
-  // Calculate sand levels for hourglass
-  const getSandLevels = () => {
+  // Calculate coffee fill level
+  const getCoffeeFillLevel = () => {
     if (totalSeconds === 0) {
-      return { topSandPercentage: 0, bottomSandPercentage: 0 };
+      return 0;
     }
     const elapsed = totalSeconds - remainingSeconds;
     const progress = elapsed / totalSeconds;
-    return {
-      topSandPercentage: (1 - progress) * 100,
-      bottomSandPercentage: progress * 100,
-    };
+    return progress * 100;
   };
 
-  const { topSandPercentage, bottomSandPercentage } = getSandLevels();
+  const coffeeFillPercentage = getCoffeeFillLevel();
 
   const formatTime = (sec: number) => {
     const h = Math.floor(sec / 3600);
@@ -158,58 +155,59 @@ export default function Timer() {
 
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-md">
-      {/* Hourglass */}
+      {/* Coffee cup */}
       <div className="relative">
         <svg width="300" height="300" viewBox="0 0 300 300" className="filter drop-shadow-sm">
           <defs>
-            {/* Clip path for top chamber */}
-            <clipPath id="topChamber">
-              <polygon points="150,150 100,50 200,50" />
-            </clipPath>
-            {/* Clip path for bottom chamber */}
-            <clipPath id="bottomChamber">
-              <polygon points="150,150 100,250 200,250" />
+            {/* Clip path for coffee cup */}
+            <clipPath id="coffeeCup">
+              <path d="M 100 130 L 110 200 L 190 200 L 200 130 Z" />
             </clipPath>
           </defs>
 
-          {/* Hourglass frame */}
+          {/* Coffee cup */}
           <g stroke="#C8BFB5" strokeWidth="3" fill="none">
-            {/* Top chamber outline */}
-            <polygon points="150,150 100,50 200,50" />
-            {/* Bottom chamber outline */}
-            <polygon points="150,150 100,250 200,250" />
-            {/* Top horizontal line */}
-            <line x1="95" y1="50" x2="205" y2="50" strokeWidth="4" strokeLinecap="round" />
-            {/* Bottom horizontal line */}
-            <line x1="95" y1="250" x2="205" y2="250" strokeWidth="4" strokeLinecap="round" />
+            {/* Cup body - trapezoid shape */}
+            <path d="M 100 130 L 110 200 L 190 200 L 200 130 Z" />
+
+            {/* Cup handle */}
+            <path d="M 200 140 Q 220 140 220 160 Q 220 180 200 180" strokeWidth="3" strokeLinecap="round" />
+
+            {/* Saucer */}
+            <ellipse cx="150" cy="200" rx="55" ry="8" fill="#C8BFB5" opacity="0.2" />
           </g>
 
-          {/* Sand in top chamber */}
-          <g clipPath="url(#topChamber)">
+          {/* Coffee fill in cup */}
+          <g clipPath="url(#coffeeCup)">
             <rect
               x="100"
-              y={50 + (100 - topSandPercentage)}
+              y={200 - (70 * coffeeFillPercentage / 100)}
               width="100"
-              height={topSandPercentage}
-              fill="#9A9085"
+              height={70 * coffeeFillPercentage / 100}
+              fill="#6B4423"
               className="transition-all duration-1000 ease-linear"
             />
+            {/* Coffee surface shimmer */}
+            {coffeeFillPercentage > 0 && (
+              <ellipse
+                cx="150"
+                cy={200 - (70 * coffeeFillPercentage / 100)}
+                rx="45"
+                ry="4"
+                fill="#8B5A3C"
+                opacity="0.6"
+              />
+            )}
           </g>
 
-          {/* Sand in bottom chamber */}
-          <g clipPath="url(#bottomChamber)">
-            <rect
-              x="100"
-              y={250 - bottomSandPercentage}
-              width="100"
-              height={bottomSandPercentage}
-              fill="#9A9085"
-              className="transition-all duration-1000 ease-linear"
-            />
-          </g>
-
-          {/* Center neck detail */}
-          <circle cx="150" cy="150" r="3" fill="#C8BFB5" />
+          {/* Steam from cup when coffee is present */}
+          {coffeeFillPercentage > 10 && (
+            <g opacity="0.4" stroke="#9A9085" strokeWidth="2" fill="none" strokeLinecap="round">
+              <path d="M 135 125 Q 130 115 135 105" className="animate-pulse" />
+              <path d="M 150 125 Q 145 115 150 105" className="animate-pulse" style={{animationDelay: '0.3s'}} />
+              <path d="M 165 125 Q 160 115 165 105" className="animate-pulse" style={{animationDelay: '0.6s'}} />
+            </g>
+          )}
         </svg>
       </div>
 
